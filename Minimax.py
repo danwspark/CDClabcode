@@ -30,8 +30,17 @@ class BoundedMinimaxPlayer(Player):
         return lowest score when white wins.  Otherwise should return
         number of black's connected pieces minus the number of white's
         connected pieces."""
-        raise NotImplementedError("TODO")
+        if whiteWins(board):
+            return -100
 
+        elif blackWins(board):
+            return 100
+
+        blackCount = countConnected(board,"B")
+        whiteCount = countConnected(board,"W")
+
+        return blackCount + whiteCount
+        
     def betterEval(self, board):
         """Invent a better evaluator than the one above."""
         raise NotImplementedError("TODO")
