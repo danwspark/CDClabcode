@@ -9,7 +9,7 @@ from random import choice
 
 def main():
     game = HexGame(6)
-    p1 = BoundedMinimaxPlayer(game,5)
+    p1 = BoundedMinimaxPlayer(game,2)
     p2 = HumanPlayer(game)
     game.playOneGame(p1,p2)
     
@@ -39,10 +39,10 @@ class BoundedMinimaxPlayer(Player):
         number of black's connected pieces minus the number of white's
         connected pieces."""
         if self.game.whiteWins(board):
-            return -100
+            return -100  #some large negative number
 
         elif self.game.blackWins(board):
-            return 100
+            return 100  #some large positive number
 
         blackCount = self.game.countConnected(board,"B")
         whiteCount = -self.game.countConnected(board,"W")
@@ -58,8 +58,8 @@ class BoundedMinimaxPlayer(Player):
         either boundedMinimax or alphaBetaMinimax. Returns the best
         move found."""
         newNode = Node(board,None,0,self.side)
-        value = boundedMinimax(newNode) #can be alphaBetaMinimax
-        print "TEST: current value of node: ",value
+        value = self.boundedMinimax(newNode) #can be alphaBetaMinimax
+        #print "TEST: current value of node: ",value
         return self.bestMove
         
     def boundedMinimax(self, node):
@@ -98,15 +98,23 @@ class BoundedMinimaxPlayer(Player):
                 mins.append(i)
             if scores[i] == maximum:
                 maxes.append(i)
-
+        
         if node.side == 'B':
             if node.depth == 0:  #at root
+                print scores
+                print minimum, mins
+                print maximum, maxes
                 ind = choice(maxes)
+                print ind
                 self.bestMove = moves[ind]
             return maximum
         else:
             if node.depth == 0:
+                print scores
+                print minimum, mins
+                print maximum, maxes
                 ind = choice(mins)
+                print ind
                 self.bestMove = moves[ind]
             return minimum
 

@@ -54,7 +54,7 @@ class HexGame(object):
             self.turn = 'B'
             row, col = player1.getMove(self.board)
             self.board[row][col] = self.turn
-            print "score for black: ",player1.eval(self.board)#
+            #print "score for black: ",player1.eval(self.board)
             #connected = self.countConnected(self.board, self.turn)
             #print "%s connected: %d" % (self.turn, connected)
             if show:
