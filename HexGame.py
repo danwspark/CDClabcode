@@ -54,6 +54,8 @@ class HexGame(object):
             self.turn = 'B'
             row, col = player1.getMove(self.board)
             self.board[row][col] = self.turn            
+            #connected = self.countConnected(self.board, self.turn)
+            #print "%s connected: %d" % (self.turn, connected)
             if show:
                 print("Made move (%d, %d)" % (row, col))
             if self.blackWins(self.board): 
@@ -65,6 +67,8 @@ class HexGame(object):
             self.turn = "W"
             row, col = player2.getMove(self.board)
             self.board[row][col] = self.turn
+            #connected = self.countConnected(self.board, self.turn)
+            #print "%s connected: %d" % (self.turn, connected)
             if self.whiteWins(self.board): 
                 winner = 'W'
                 break
@@ -178,7 +182,28 @@ class HexGame(object):
     def countConnected(self, board, side):
         """Counts how many pieces for the given side touch another piece
         of the same side."""
-        raise NotImplementedError("TODO")
+        q = FIFO_Queue()
+        visited = set()
+        connected = 0
+
+        #get all pieces of one color on the board
+        for row in range(self.size):
+            for col in range(self.size):
+                if board[row][col] == side:
+                    q.add( (row,col) )
+
+        while len(q) > 0:
+            row, col = q.get()
+            if (row,col) not in visited:
+                visited.add( (row,col) )
+                isConnected = False
+                for neighbor in self.getNeighbors(row,col):
+                    if board[ neighbor[0] ][ neighbor[1] ] == side:
+                        isConnected = True
+                if isConnected:
+                    connected += 1
+
+        return connected
 
 if __name__ == '__main__':
     main()
