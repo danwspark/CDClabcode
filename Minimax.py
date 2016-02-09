@@ -6,6 +6,13 @@
 from Players import *
 from HexGame import *
 
+def main():
+    game = HexGame(6)
+    p1 = BoundedMinimaxPlayer(game,5)
+    p2 = HumanPlayer(game)
+    game.playOneGame(p1,p2)
+    
+
 class Node(object):
     """Node used in minimax search"""
     def __init__(self, board, move, depth, side):
@@ -30,14 +37,14 @@ class BoundedMinimaxPlayer(Player):
         return lowest score when white wins.  Otherwise should return
         number of black's connected pieces minus the number of white's
         connected pieces."""
-        if whiteWins(board):
+        if self.game.whiteWins(board):
             return -100
 
-        elif blackWins(board):
+        elif self.game.blackWins(board):
             return 100
 
-        blackCount = countConnected(board,"B")
-        whiteCount = countConnected(board,"W")
+        blackCount = self.game.countConnected(board,"B")
+        whiteCount = -self.game.countConnected(board,"W")
 
         return blackCount + whiteCount
         
@@ -49,7 +56,10 @@ class BoundedMinimaxPlayer(Player):
         """Given a board, creates the root node of the search tree and calls
         either boundedMinimax or alphaBetaMinimax. Returns the best
         move found."""
-        raise NotImplementedError("TODO")
+        newNode = Node(board,None,0,self.side)
+        value = boundedMinimax(newNode) #can be alphaBetaMinimax
+        print "TEST: current value of node: ",value
+        return self.bestMove
         
     def boundedMinimax(self, node):
         """Returns the value of the given node. Also sets self.bestMove to
