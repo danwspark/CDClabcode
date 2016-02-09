@@ -45,7 +45,51 @@ class BoundedMinimaxPlayer(Player):
     def boundedMinimax(self, node):
         """Returns the value of the given node. Also sets self.bestMove to
         the best move found from the root node at depth 0."""
-        raise NotImplementedError("TODO")
+        #base case
+        if node.depth == self.depthLimit:
+            return self.eval(node.board)
+        
+        #get all possible moves
+        moves = self.game.getPossibleMoves(node.board)
+        if len(moves) == 0:
+            return self.eval(node.board)
+        
+        scores = []  #list of scores corresponding to moves
+        for move in moves:
+            nextBoard = self.game.getNextBoard(node.board, move, node.side)
+            if node.side == 'B':
+                side = 'W'
+            else:
+                side = 'B'
+            nextNode = Node(nextBoard, move, node.depth+1, side)
+            score = self.boundedMinimax(nextNode)
+            scores.append(score)
+        
+        minimum = score[0]
+        maximum = score[0]
+        mins = [] #list storing indices of mins
+        maxes = [] #list storing indices of maxes
+        for i in range(len(scores)):
+            if scores[i] <= minimum:
+                minimum = scores[i]
+                mins.append(i)
+            if scores[i] >= maximum:
+                maximum = scores[i]
+                maxes.append(i)
+                
+        if node.side == 'B':
+            if node.depth == 0:  #at root
+                ind = choice(maxes)
+                self.bestMove = moves[ind]
+            return maximum
+        else:
+            if node.depth == 0:
+                ind = choice(mins)
+                self.bestMove = moves[ind]
+            return minimum
+
+            
+
 
     def alphaBetaMinimax(self, node, alpha, beta):
         """Works similarly to boundedMinimax, but cuts off search down branches
