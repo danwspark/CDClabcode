@@ -5,6 +5,7 @@
 
 from Players import *
 from HexGame import *
+from random import choice
 
 class Node(object):
     """Node used in minimax search"""
@@ -55,6 +56,8 @@ class BoundedMinimaxPlayer(Player):
             return self.eval(node.board)
         
         scores = []  #list of scores corresponding to moves
+        minimum = float('inf')
+        maximum = -float('inf')
         for move in moves:
             nextBoard = self.game.getNextBoard(node.board, move, node.side)
             if node.side == 'B':
@@ -64,19 +67,19 @@ class BoundedMinimaxPlayer(Player):
             nextNode = Node(nextBoard, move, node.depth+1, side)
             score = self.boundedMinimax(nextNode)
             scores.append(score)
+            if score < minimum:
+                minimum = score
+            if score > maximum:
+                maximum = score
         
-        minimum = score[0]
-        maximum = score[0]
         mins = [] #list storing indices of mins
         maxes = [] #list storing indices of maxes
         for i in range(len(scores)):
-            if scores[i] <= minimum:
-                minimum = scores[i]
+            if scores[i] == minimum:
                 mins.append(i)
-            if scores[i] >= maximum:
-                maximum = scores[i]
+            if scores[i] == maximum:
                 maxes.append(i)
-                
+
         if node.side == 'B':
             if node.depth == 0:  #at root
                 ind = choice(maxes)
